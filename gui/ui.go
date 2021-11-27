@@ -91,14 +91,21 @@ func (ui *UI) RunGUI() {
 		panic(err)
 	}
 
+	ticker := time.NewTicker(40 * time.Millisecond)
+	timestamp := time.Now()
 	for !ui.win.Closed() {
 		ui.processEvents()
 
-		ui.Space.Step()
+		for i := 0; i < ui.time; i++ {
+			ui.Space.Step()
+		}
 		ui.Draw(ui.win)
 		ui.recordTrails()
 
-		time.Sleep(time.Duration(100000/ui.time) * time.Microsecond)
+		ui.win.SetTitle(fmt.Sprintf("gravity (%.1f FPS)", 1.0/time.Now().Sub(timestamp).Seconds()))
+		timestamp = time.Now()
+
+		<-ticker.C
 	}
 }
 

@@ -15,16 +15,18 @@ func empty() []*particle.Particle {
 func singleSun() []*particle.Particle {
 	return []*particle.Particle{
 		{X: 0, Y: 0, M: 75000},
-		{X: 100, Y: 0, M: 100, VY: 0.9},
+		{X: 100, Y: 0, M: 10, VY: 0.9},
+		{X: 1000, Y: 0, M: 100, VY: 0.3},
 	}
 }
 
 func multipleSuns() []*particle.Particle {
 	return []*particle.Particle{
-		{X: -100, Y: 100, M: 200000, VX: 0, VY: -1},
-		{X: -100, Y: -100, M: 200000, VX: 1, VY: 0},
-		{X: 100, Y: -100, M: 200000, VX: 0, VY: 1},
-		{X: 100, Y: 100, M: 200000, VX: -1, VY: 0},
+		{X: 0, Y: 0, M: 200000, VX: 0, VY: 0},
+		{X: -100, Y: 100, M: 200, VX: 0, VY: -1},
+		{X: -100, Y: -100, M: 200, VX: 1, VY: 0},
+		{X: 100, Y: -100, M: 200, VX: 0, VY: 1},
+		{X: 100, Y: 100, M: 200, VX: -1, VY: 0},
 	}
 }
 

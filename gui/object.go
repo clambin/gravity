@@ -47,16 +47,20 @@ func (object *Object) drawObject() {
 }
 
 func (object *Object) drawTrail() {
-	for _, trail := range object.trails {
+	for index := range object.trails {
+		if index == 0 {
+			continue
+		}
 		object.imd.Color = pixel.RGB(0, 0, 0.5)
-		object.imd.Push(object.ui.Scale(pixel.V(trail.X, trail.Y)))
-		object.imd.Circle(1, 0)
+		object.imd.Push(object.ui.Scale(object.trails[index-1]))
+		object.imd.Push(object.ui.Scale(object.trails[index]))
+		object.imd.Line(1)
 	}
 }
 
 func (object *Object) recordTrail() {
 	object.trails = append(object.trails, pixel.V(object.particle.X, object.particle.Y))
-	const maxTrails = 200
+	const maxTrails = 2000
 	if len(object.trails) >= maxTrails {
 		object.trails = object.trails[len(object.trails)-maxTrails+1:]
 	}
