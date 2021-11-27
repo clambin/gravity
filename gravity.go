@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"gravity/gui"
 	"gravity/particle"
@@ -49,7 +48,7 @@ func main() {
 
 	initialState := singleSun
 	for _, body := range initialState() {
-		ui.Add(body, pixel.RGB(1, 0, 1), false)
+		ui.Add(body, false)
 	}
 
 	pixelgl.Run(ui.RunGUI)

@@ -2,39 +2,36 @@ package gui
 
 import (
 	"fmt"
-	"github.com/faiface/pixel"
 	"gravity/particle"
 )
 
 func (ui *UI) ClearObjects() {
-	var objects []*Object
 	var particles []*particle.Particle
-	for _, object := range ui.Objects {
-		if object.Manual == false {
-			objects = append(objects, object)
-			particles = append(particles, object.particle)
+	for _, p := range ui.Space.Particles {
+		if _, ok := ui.manualObjects[p]; ok == false {
+			particles = append(particles, p)
 		}
 	}
-	ui.Objects = objects
 	ui.Space.Particles = particles
+	ui.manualObjects = make(map[*particle.Particle]struct{})
 }
 
 func (ui *UI) DecelerateObjects() {
-	for _, object := range ui.Objects {
+	for _, p := range ui.Space.Particles {
 		//if object.Manual == true {
-		object.particle.AX /= 2
-		object.particle.AY /= 2
-		fmt.Printf("decelerate: (%f,%f)\n", object.particle.AX, object.particle.AY)
+		p.AX /= 2
+		p.AY /= 2
+		fmt.Printf("decelerate: (%f,%f)\n", p.AX, p.AY)
 		//}
 	}
 }
 
 func (ui *UI) AccelerateObjects() {
-	for _, object := range ui.Objects {
+	for _, p := range ui.Space.Particles {
 		// if object.Manual == true {
-		object.particle.AX *= 2
-		object.particle.AY *= 2
-		fmt.Printf("accelerate: (%f,%f)\n", object.particle.AX, object.particle.AY)
+		p.AX *= 2
+		p.AY *= 2
+		fmt.Printf("accelerate: (%f,%f)\n", p.AX, p.AY)
 		//}
 	}
 }
@@ -67,7 +64,7 @@ func (ui *UI) AddObject() {
 		Y:  ui.position.Y,
 		VX: VX,
 		VY: VY,
-	}, pixel.RGB(1, 1, 1), true)
+	}, true)
 }
 
 func (ui *UI) toggleShowTrails() {

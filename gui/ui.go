@@ -3,6 +3,7 @@ package gui
 import (
 	"fmt"
 	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 	"gravity/particle"
@@ -11,46 +12,28 @@ import (
 )
 
 type UI struct {
-	X          float64
-	Y          float64
-	Objects    []*Object
-	Space      particle.Space
-	scale      float64
-	time       int
-	showTrails bool
-	position   pixel.Vec
-	actions    []action
-	win        *pixelgl.Window
-}
-
-type action struct {
-	button   pixelgl.Button
-	command  func()
-	released bool
+	X             float64
+	Y             float64
+	Space         particle.Space
+	manualObjects map[*particle.Particle]struct{}
+	trails        map[*particle.Particle][]pixel.Vec
+	scale         float64
+	time          int
+	showTrails    bool
+	position      pixel.Vec
+	win           *pixelgl.Window
 }
 
 func NewUI(X, Y float64) (ui *UI) {
-	ui = &UI{
-		X:       X,
-		Y:       Y,
-		Objects: make([]*Object, 0),
-		Space: particle.Space{
-			Particles: make([]*particle.Particle, 0),
-		},
-		scale: 1,
-		time:  1,
+	return &UI{
+		X:             X,
+		Y:             Y,
+		Space:         particle.Space{Particles: make([]*particle.Particle, 0)},
+		manualObjects: make(map[*particle.Particle]struct{}),
+		trails:        make(map[*particle.Particle][]pixel.Vec),
+		scale:         1,
+		time:          1,
 	}
-	ui.actions = []action{
-		{button: pixelgl.KeyC, command: ui.ClearObjects},
-		{button: pixelgl.KeyD, command: ui.DecelerateObjects},
-		{button: pixelgl.KeyA, command: ui.AccelerateObjects},
-		{button: pixelgl.KeyRight, command: ui.SpeedUp},
-		{button: pixelgl.KeyLeft, command: ui.SlowDown},
-		{button: pixelgl.MouseButtonLeft, command: ui.AddObjectStart},
-		{button: pixelgl.MouseButtonLeft, command: ui.AddObject, released: true},
-	}
-
-	return
 }
 
 func (ui UI) Scale(input pixel.Vec) pixel.Vec {
@@ -69,15 +52,65 @@ func (ui UI) Unscale(input pixel.Vec) pixel.Vec {
 
 func (ui *UI) Draw(win *pixelgl.Window) {
 	win.Clear(colornames.Black)
-	for _, o := range ui.Objects {
-		o.Draw(win, ui.showTrails)
+	imd := imdraw.New(nil)
+	for _, p := range ui.Space.Particles {
+		ui.drawObject(imd, p)
+		if ui.showTrails {
+			ui.drawTrail(imd, p)
+		}
+		ui.drawVelocity(imd, p)
+		ui.drawAcceleration(imd, p)
 	}
-	win.Update()
+	imd.Draw(win)
 }
 
-func (ui *UI) Add(p *particle.Particle, color pixel.RGBA, manual bool) {
+func (ui *UI) drawObject(imd *imdraw.IMDraw, p *particle.Particle) {
+	if _, ok := ui.manualObjects[p]; ok == true {
+		imd.Color = colornames.White
+	} else {
+		imd.Color = colornames.Purple
+	}
+	imd.Push(ui.Scale(pixel.V(p.X, p.Y)))
+	imd.Circle(2, 0)
+}
+
+func (ui *UI) drawTrail(imd *imdraw.IMDraw, p *particle.Particle) {
+	for index := range ui.trails[p] {
+		if index == 0 {
+			continue
+		}
+		imd.Color = pixel.RGB(0, 0, 0.5)
+		imd.Push(ui.Scale(ui.trails[p][index-1]))
+		imd.Push(ui.Scale(ui.trails[p][index]))
+		imd.Line(1)
+	}
+}
+
+func (ui *UI) drawVelocity(imd *imdraw.IMDraw, p *particle.Particle) {
+	x1 := p.X
+	y1 := p.Y
+	x2 := x1 + p.VX*10
+	y2 := y1 + p.VY*10
+	imd.Color = pixel.RGB(0, 0.8, 0)
+	imd.Push(ui.Scale(pixel.V(x1, y1)), ui.Scale(pixel.V(x2, y2)))
+	imd.Line(1)
+}
+
+func (ui *UI) drawAcceleration(imd *imdraw.IMDraw, p *particle.Particle) {
+	x1 := p.X
+	y1 := p.Y
+	x2 := x1 + p.AX*1000
+	y2 := y1 + p.AY*1000
+	imd.Color = pixel.RGB(1, 0, 0)
+	imd.Push(ui.Scale(pixel.V(x1, y1)), ui.Scale(pixel.V(x2, y2)))
+	imd.Line(1)
+}
+
+func (ui *UI) Add(p *particle.Particle, manual bool) {
 	ui.Space.Add(p)
-	ui.Objects = append(ui.Objects, NewObject(p, color, ui, manual))
+	if manual {
+		ui.manualObjects[p] = struct{}{}
+	}
 }
 
 func (ui *UI) RunGUI() {
@@ -102,6 +135,8 @@ func (ui *UI) RunGUI() {
 		ui.Draw(ui.win)
 		ui.recordTrails()
 
+		ui.win.Update()
+
 		ui.win.SetTitle(fmt.Sprintf("gravity (%.1f FPS)", 1.0/time.Now().Sub(timestamp).Seconds()))
 		timestamp = time.Now()
 
@@ -110,8 +145,14 @@ func (ui *UI) RunGUI() {
 }
 
 func (ui *UI) recordTrails() {
-	for _, o := range ui.Objects {
-		o.recordTrail()
+	const maxTrails = 2000
+	for _, p := range ui.Space.Particles {
+		trails, _ := ui.trails[p]
+		trails = append(trails, pixel.V(p.X, p.Y))
+		if len(trails) > maxTrails {
+			trails = trails[1:]
+		}
+		ui.trails[p] = trails
 	}
 }
 
