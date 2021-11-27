@@ -11,15 +11,16 @@ import (
 )
 
 type UI struct {
-	X        float64
-	Y        float64
-	Objects  []*Object
-	Space    particle.Space
-	scale    float64
-	time     int
-	position pixel.Vec
-	actions  []action
-	win      *pixelgl.Window
+	X          float64
+	Y          float64
+	Objects    []*Object
+	Space      particle.Space
+	scale      float64
+	time       int
+	showTrails bool
+	position   pixel.Vec
+	actions    []action
+	win        *pixelgl.Window
 }
 
 type action struct {
@@ -69,7 +70,7 @@ func (ui UI) Unscale(input pixel.Vec) pixel.Vec {
 func (ui *UI) Draw(win *pixelgl.Window) {
 	win.Clear(colornames.Black)
 	for _, o := range ui.Objects {
-		o.Draw(win)
+		o.Draw(win, ui.showTrails)
 	}
 	win.Update()
 }
@@ -116,6 +117,9 @@ func (ui *UI) processEvents() {
 	}
 	if ui.win.JustPressed(pixelgl.KeyA) {
 		ui.AccelerateObjects()
+	}
+	if ui.win.JustPressed(pixelgl.KeyT) {
+		ui.toggleShowTrails()
 	}
 	if ui.win.JustReleased(pixelgl.KeyRight) {
 		ui.SpeedUp()

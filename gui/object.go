@@ -28,11 +28,13 @@ func NewObject(particle *particle.Particle, color pixel.RGBA, ui *UI, manual boo
 	return
 }
 
-func (object *Object) Draw(win *pixelgl.Window) {
+func (object *Object) Draw(win *pixelgl.Window, showTrails bool) {
 	object.imd.Clear()
 	object.imd.Reset()
 	object.drawObject()
-	// object.drawTrail()
+	if showTrails {
+		object.drawTrail()
+	}
 	object.drawVelocity()
 	object.drawAcceleration()
 	object.imd.Draw(win)
@@ -54,7 +56,7 @@ func (object *Object) drawTrail() {
 
 func (object *Object) recordTrail() {
 	object.trails = append(object.trails, pixel.V(object.particle.X, object.particle.Y))
-	const maxTrails = 2000
+	const maxTrails = 200
 	if len(object.trails) >= maxTrails {
 		object.trails = object.trails[len(object.trails)-maxTrails+1:]
 	}

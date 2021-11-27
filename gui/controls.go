@@ -69,3 +69,7 @@ func (ui *UI) AddObject() {
 		VY: VY,
 	}, pixel.RGB(1, 1, 1), true)
 }
+
+func (ui *UI) toggleShowTrails() {
+	ui.showTrails = !ui.showTrails
+}
