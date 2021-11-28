@@ -14,7 +14,7 @@ type UI struct {
 	Space         *chipmunk.Space
 	manualObjects map[*chipmunk.Body]struct{}
 	trails        map[*chipmunk.Body][]pixel.Vec
-	scale         float64
+	viewFinder    ViewFinder
 	time          int
 	showTrails    bool
 	position      pixel.Vec
@@ -28,22 +28,8 @@ func NewUI(X, Y float64) (ui *UI) {
 		Space:         chipmunk.NewSpace(),
 		manualObjects: make(map[*chipmunk.Body]struct{}),
 		trails:        make(map[*chipmunk.Body][]pixel.Vec),
-		scale:         1,
+		viewFinder:    ViewFinder{Scale: 1},
 		time:          1,
-	}
-}
-
-func (ui UI) Scale(input pixel.Vec) pixel.Vec {
-	return pixel.Vec{
-		X: input.X / ui.scale,
-		Y: input.Y / ui.scale,
-	}
-}
-
-func (ui UI) Unscale(input pixel.Vec) pixel.Vec {
-	return pixel.Vec{
-		X: input.X * ui.scale,
-		Y: input.Y * ui.scale,
 	}
 }
 

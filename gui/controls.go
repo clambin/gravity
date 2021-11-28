@@ -2,10 +2,10 @@ package gui
 
 import (
 	"fmt"
+	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/vova616/chipmunk"
 	"github.com/vova616/chipmunk/vect"
-	"math"
 )
 
 func (ui *UI) ProcessEvents() {
@@ -27,19 +27,21 @@ func (ui *UI) ProcessEvents() {
 	if ui.win.JustReleased(pixelgl.KeyLeft) {
 		ui.SlowDown()
 	}
-	if ui.win.JustPressed(pixelgl.MouseButtonLeft) {
-		ui.AddObjectStart()
-	}
-	if ui.win.JustReleased(pixelgl.MouseButtonLeft) {
-		ui.AddObject()
-	}
 	if ui.win.JustReleased(pixelgl.Key0) {
-		ui.scale = 1.0
-		fmt.Printf("scale: %.1f\n", ui.scale)
+		ui.viewFinder.Offset = pixel.V(0, 0)
+		ui.viewFinder.SetScale(1)
+		fmt.Printf("scale: %.1f\n", ui.viewFinder.Scale)
+	}
+	if ui.win.JustPressed(pixelgl.MouseButtonLeft) {
+		ui.StartMouseDrag()
+	} else if ui.win.JustReleased(pixelgl.MouseButtonLeft) && ui.win.Pressed(pixelgl.KeyP) {
+		ui.AddObject()
+	} else if ui.win.Pressed(pixelgl.MouseButtonLeft) && !ui.win.Pressed(pixelgl.KeyP) {
+		ui.SetOffset()
 	}
 	if scroll := ui.win.MouseScroll(); scroll.Y != 0 {
-		ui.scale = math.Max(ui.scale-scroll.Y, 0.1)
-		fmt.Printf("scale: %.1f\n", ui.scale)
+		ui.viewFinder.SetScale(ui.viewFinder.Scale - scroll.Y)
+		fmt.Printf("scale: %.1f\n", ui.viewFinder.Scale)
 	}
 }
 
@@ -90,7 +92,13 @@ func (ui *UI) SlowDown() {
 	fmt.Printf("time: %d\n", ui.time)
 }
 
-func (ui *UI) AddObjectStart() {
+func (ui *UI) StartMouseDrag() {
+	ui.position = ui.win.MousePosition()
+}
+
+func (ui *UI) SetOffset() {
+	delta := ui.win.MousePosition().Sub(ui.position)
+	ui.viewFinder.Offset = ui.viewFinder.Offset.Add(delta.Scaled(ui.viewFinder.Scale))
 	ui.position = ui.win.MousePosition()
 }
 
@@ -99,8 +107,8 @@ func (ui *UI) AddObject() {
 	position2 := ui.win.MousePosition()
 	VX := float32(position2.X-ui.position.X) / 50
 	VY := float32(position2.Y-ui.position.Y) / 50
-	position := ui.Unscale(ui.position)
-	ui.Add(vect.Vect{X: vect.Float(position.X), Y: vect.Float(position.Y)}, 1, 1, VX, VY, true)
+	position := ui.viewFinder.ViewFinderToReal(ui.position)
+	ui.Add(vect.Vect{X: vect.Float(position.X), Y: vect.Float(position.Y)}, 3, 1, VX, VY, true)
 }
 
 func (ui *UI) Add(position vect.Vect, r, m, vx, vy float32, manual bool) {

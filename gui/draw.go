@@ -29,8 +29,8 @@ func (ui *UI) drawObject(imd *imdraw.IMDraw, body *chipmunk.Body) {
 		imd.Color = colornames.Purple
 	}
 	p := body.Position()
-	imd.Push(ui.Scale(pixel.V(float64(p.X), float64(p.Y))))
-	imd.Circle(float64(body.Shapes[0].GetAsCircle().Radius)/ui.scale, 0)
+	imd.Push(ui.viewFinder.RealToViewFinder(pixel.V(float64(p.X), float64(p.Y))))
+	imd.Circle(float64(body.Shapes[0].GetAsCircle().Radius)/ui.viewFinder.Scale, 0)
 }
 
 func (ui *UI) drawTrail(imd *imdraw.IMDraw, body *chipmunk.Body) {
@@ -39,8 +39,8 @@ func (ui *UI) drawTrail(imd *imdraw.IMDraw, body *chipmunk.Body) {
 			continue
 		}
 		imd.Color = pixel.RGB(0, 0, 0.5)
-		imd.Push(ui.Scale(ui.trails[body][index-1]))
-		imd.Push(ui.Scale(ui.trails[body][index]))
+		imd.Push(ui.viewFinder.RealToViewFinder(ui.trails[body][index-1]))
+		imd.Push(ui.viewFinder.RealToViewFinder(ui.trails[body][index]))
 		imd.Line(1)
 	}
 }
@@ -54,7 +54,7 @@ func (ui *UI) drawVelocity(imd *imdraw.IMDraw, body *chipmunk.Body) {
 	vx := float64(v.X * magnify)
 	vy := float64(v.Y * magnify)
 	imd.Color = pixel.RGB(0, 0.8, 0)
-	imd.Push(ui.Scale(pixel.V(x, y)), ui.Scale(pixel.V(x+vx, y+vy)))
+	imd.Push(ui.viewFinder.RealToViewFinder(pixel.V(x, y)), ui.viewFinder.RealToViewFinder(pixel.V(x+vx, y+vy)))
 	imd.Line(1)
 }
 

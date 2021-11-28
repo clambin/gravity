@@ -23,18 +23,18 @@ func empty() []particle {
 func singleSun() []particle {
 	return []particle{
 		{X: 0, Y: 0, M: 75e8, R: 40},
-		{X: 200, Y: 0, M: 10, R: 5, VY: 1.99},
+		{X: 500, Y: 0, M: 100, R: 10, VX: -0.2, VY: 1.4},
 		{X: 1000, Y: 0, M: 100, R: 10, VY: 1.0},
 	}
 }
 
 func multipleSuns() []particle {
 	return []particle{
-		{X: 0, Y: 0, M: 2e10, R: 50, VX: 0, VY: 0},
-		{X: -100, Y: 100, M: 2000, R: 10, VX: 0, VY: -1},
-		{X: -100, Y: -100, M: 2000, R: 10, VX: 1, VY: 0},
-		{X: 100, Y: -100, M: 2000, R: 10, VX: 0, VY: 1},
-		{X: 100, Y: 100, M: 2000, R: 10, VX: -1, VY: 0},
+		{X: 0, Y: 0, M: 2e10, R: 100, VX: 0, VY: 0},
+		{X: -100, Y: 100, M: 2e7, R: 30, VX: 0, VY: -1},
+		{X: -100, Y: -100, M: 2e7, R: 30, VX: 1, VY: 0},
+		{X: 100, Y: -100, M: 2e7, R: 30, VX: 0, VY: 1},
+		{X: 100, Y: 100, M: 2e7, R: 30, VX: -1, VY: 0},
 	}
 }
 
@@ -47,28 +47,34 @@ func threeBodies() []particle {
 }
 
 func ducksInARow() []particle {
-	var particles []particle
-	for i := -500; i <= 500; i += 100 {
-		particles = append(particles, particle{
-			M:  20000,
-			R:  50,
-			X:  vect.Float(i),
-			Y:  0,
-			VX: float32(rand.Int31n(3) - 1),
-			VY: float32(rand.Int31n(3) - 1),
-		})
+	var particles []particle = []particle{
+		{
+			M: 2e6,
+			R: 10,
+			X: 0,
+			Y: 0,
+		},
+	}
+	for i := -1000; i <= 1000; i += 500 {
+		for j := -1000; j <= 1000; j += 500 {
+			particles = append(particles, particle{
+				M:  1e3,
+				R:  50,
+				X:  vect.Float(i),
+				Y:  vect.Float(j),
+				VX: float32(rand.Int31n(300) - 150),
+				VY: float32(rand.Int31n(300) - 150),
+			})
+		}
 	}
 	return particles
 }
 
 func main() {
 	ui := gui.NewUI(1024, 1024)
-	// ui.Space.Gravity = vect.Vect{X:0, Y: -0.1}
-
-	initialState := threeBodies
-	for _, body := range initialState() {
+	initialState := singleSun()
+	for _, body := range initialState {
 		ui.Add(vect.Vect{X: body.X, Y: body.Y}, body.R, body.M, body.VX, body.VY, false)
 	}
-
 	pixelgl.Run(ui.RunGUI)
 }
