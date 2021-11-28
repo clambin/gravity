@@ -1,14 +1,14 @@
-package gui_test
+package field_test
 
 import (
 	"github.com/faiface/pixel"
 	"github.com/stretchr/testify/assert"
-	"gravity/gui"
+	"gravity/gui/field"
 	"testing"
 )
 
 func TestViewFinder_RealToViewFinder(t *testing.T) {
-	vf := &gui.ViewFinder{Scale: 1}
+	vf := &field.ViewFinder{Scale: 1}
 
 	input := pixel.V(1000, 500)
 	output := vf.RealToViewFinder(input)
@@ -24,7 +24,7 @@ func TestViewFinder_RealToViewFinder(t *testing.T) {
 }
 
 func TestViewFinder_ViewFinderToReal(t *testing.T) {
-	vf := &gui.ViewFinder{Scale: 1}
+	vf := &field.ViewFinder{Scale: 1}
 
 	input := pixel.V(10, 5)
 	output := vf.ViewFinderToReal(input)

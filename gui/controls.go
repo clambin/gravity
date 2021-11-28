@@ -2,129 +2,48 @@ package gui
 
 import (
 	"fmt"
-	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/vova616/chipmunk"
-	"github.com/vova616/chipmunk/vect"
+	"math"
 )
 
-func (ui *UI) ProcessEvents() {
-	if ui.win.JustPressed(pixelgl.KeyC) {
-		ui.ClearObjects()
+func (ui *UI) ProcessEvents(win *pixelgl.Window) {
+	if win.JustPressed(pixelgl.KeyC) {
+		ui.Field.ClearObjects()
 	}
-	if ui.win.JustPressed(pixelgl.KeyD) {
-		ui.DecelerateObjects()
+	if win.JustPressed(pixelgl.KeyD) {
+		ui.Field.DecelerateObjects()
 	}
-	if ui.win.JustPressed(pixelgl.KeyA) {
-		ui.AccelerateObjects()
+	if win.JustPressed(pixelgl.KeyA) {
+		ui.Field.AccelerateObjects()
 	}
-	if ui.win.JustPressed(pixelgl.KeyT) {
-		ui.toggleShowTrails()
+	if win.JustPressed(pixelgl.KeyT) {
+		ui.Field.ToggleShowTrails()
 	}
-	if ui.win.JustReleased(pixelgl.KeyRight) {
-		ui.SpeedUp()
+	if win.JustReleased(pixelgl.KeyRight) {
+		ui.time *= 2
+		fmt.Printf("time: %d\n", ui.time)
 	}
-	if ui.win.JustReleased(pixelgl.KeyLeft) {
-		ui.SlowDown()
+	if win.JustReleased(pixelgl.KeyLeft) {
+		ui.time = int(math.Max(1.0, float64(ui.time/2)))
+		fmt.Printf("time: %d\n", ui.time)
 	}
-	if ui.win.JustReleased(pixelgl.Key0) {
-		ui.viewFinder.Offset = pixel.V(0, 0)
-		ui.viewFinder.SetScale(1)
-		fmt.Printf("scale: %.1f\n", ui.viewFinder.Scale)
+	if win.JustReleased(pixelgl.Key0) {
+		ui.Field.ViewFinder.Reset()
 	}
-	if ui.win.JustPressed(pixelgl.MouseButtonLeft) {
-		ui.StartMouseDrag()
-	} else if ui.win.JustReleased(pixelgl.MouseButtonLeft) && ui.win.Pressed(pixelgl.KeyP) {
-		ui.AddObject()
-	} else if ui.win.Pressed(pixelgl.MouseButtonLeft) && !ui.win.Pressed(pixelgl.KeyP) {
-		ui.SetOffset()
+	if win.JustPressed(pixelgl.MouseButtonLeft) {
+		ui.position = win.MousePosition()
+	} else if win.Pressed(pixelgl.MouseButtonLeft) && !win.Pressed(pixelgl.KeyLeftControl) {
+		newPosition := win.MousePosition()
+		ui.Field.ViewFinder.SetOffset(newPosition.Sub(ui.position))
+		ui.position = newPosition
+	} else if win.JustReleased(pixelgl.MouseButtonLeft) && win.Pressed(pixelgl.KeyLeftControl) {
+		fmt.Printf("adding particle at (%f,%f)\n", ui.position.X, ui.position.Y)
+		velocity := win.MousePosition().Sub(ui.position).Scaled(1.0 / 50)
+		ui.Field.Add(ui.position, 3, 1, velocity, true)
 	}
-	if scroll := ui.win.MouseScroll(); scroll.Y != 0 {
-		ui.viewFinder.SetScale(ui.viewFinder.Scale - scroll.Y)
-		fmt.Printf("scale: %.1f\n", ui.viewFinder.Scale)
+	if scroll := win.MouseScroll(); scroll.Y != 0 {
+		const sensitivity = 10.0
+		ui.Field.ViewFinder.SetScale(ui.Field.ViewFinder.Scale - scroll.Y/sensitivity)
+		fmt.Printf("scale: %.1f\n", ui.Field.ViewFinder.Scale)
 	}
-}
-
-func (ui *UI) ClearObjects() {
-	var bodies []*chipmunk.Body
-	for _, body := range ui.Space.Bodies {
-		if _, ok := ui.manualObjects[body]; ok == false {
-			bodies = append(bodies, body)
-		}
-	}
-	ui.Space.Bodies = bodies
-	ui.manualObjects = make(map[*chipmunk.Body]struct{})
-}
-
-func (ui *UI) DecelerateObjects() {
-	/*
-		for _, p := range ui.Space.Particles {
-			//if object.Manual == true {
-			p.AX /= 2
-			p.AY /= 2
-			fmt.Printf("decelerate: (%f,%f)\n", p.AX, p.AY)
-			//}
-		}
-	*/
-}
-
-func (ui *UI) AccelerateObjects() {
-	/*
-		for _, p := range ui.Space.Particles {
-			// if object.Manual == true {
-			p.AX *= 2
-			p.AY *= 2
-			fmt.Printf("accelerate: (%f,%f)\n", p.AX, p.AY)
-			//}
-		}
-	*/
-}
-
-func (ui *UI) SpeedUp() {
-	ui.time *= 2
-	fmt.Printf("time: %d\n", ui.time)
-}
-
-func (ui *UI) SlowDown() {
-	if ui.time > 1 {
-		ui.time /= 2
-	}
-	fmt.Printf("time: %d\n", ui.time)
-}
-
-func (ui *UI) StartMouseDrag() {
-	ui.position = ui.win.MousePosition()
-}
-
-func (ui *UI) SetOffset() {
-	delta := ui.win.MousePosition().Sub(ui.position)
-	ui.viewFinder.Offset = ui.viewFinder.Offset.Add(delta.Scaled(ui.viewFinder.Scale))
-	ui.position = ui.win.MousePosition()
-}
-
-func (ui *UI) AddObject() {
-	fmt.Printf("adding particle at (%f,%f)\n", ui.position.X, ui.position.Y)
-	position2 := ui.win.MousePosition()
-	VX := float32(position2.X-ui.position.X) / 50
-	VY := float32(position2.Y-ui.position.Y) / 50
-	position := ui.viewFinder.ViewFinderToReal(ui.position)
-	ui.Add(vect.Vect{X: vect.Float(position.X), Y: vect.Float(position.Y)}, 3, 1, VX, VY, true)
-}
-
-func (ui *UI) Add(position vect.Vect, r, m, vx, vy float32, manual bool) {
-	circle := chipmunk.NewCircle(vect.Vector_Zero, r)
-	//circle.SetElasticity(0.1)
-	body := chipmunk.NewBody(vect.Float(m), circle.Moment(m))
-	body.SetPosition(position)
-	body.AddShape(circle)
-	body.SetVelocity(vx, vy)
-	ui.Space.AddBody(body)
-
-	if manual {
-		ui.manualObjects[body] = struct{}{}
-	}
-}
-
-func (ui *UI) toggleShowTrails() {
-	ui.showTrails = !ui.showTrails
 }
