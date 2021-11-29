@@ -65,10 +65,14 @@ type BodyStats struct {
 // Stats generates BodyStats for each body on the field
 func (f Field) Stats() (output []BodyStats) {
 	for _, body := range f.space.Bodies {
+		var acceleration vect.Vect
+		if body.UserData != nil {
+			acceleration = body.UserData.(vect.Vect)
+		}
 		output = append(output, BodyStats{
 			Position:     body.Position(),
 			Velocity:     body.Velocity(),
-			Acceleration: body.UserData.(vect.Vect),
+			Acceleration: acceleration,
 		})
 	}
 	return

@@ -37,7 +37,6 @@ func (ui *UI) ProcessEvents(win *pixelgl.Window) {
 		ui.Field.ViewFinder.SetOffset(newPosition.Sub(ui.position))
 		ui.position = newPosition
 	} else if win.JustReleased(pixelgl.MouseButtonLeft) && win.Pressed(pixelgl.KeyLeftControl) {
-		fmt.Printf("adding particle at (%f,%f)\n", ui.position.X, ui.position.Y)
 		velocity := win.MousePosition().Sub(ui.position).Scaled(1.0 / 50)
 		ui.Field.Add(ui.position, 3, 1, velocity, true)
 	}

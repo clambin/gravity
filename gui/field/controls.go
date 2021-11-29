@@ -1,6 +1,7 @@
 package field
 
 import (
+	"fmt"
 	"github.com/faiface/pixel"
 	"github.com/vova616/chipmunk"
 	"github.com/vova616/chipmunk/vect"
@@ -51,7 +52,18 @@ func (f *Field) AccelerateObjects() {
 func (f *Field) Add(position pixel.Vec, r, m float32, velocity pixel.Vec, manual bool) {
 	// convert position & velocity to real coordinates
 	p := f.ViewFinder.ViewFinderToReal(position)
-	v := f.ViewFinder.ViewFinderToReal(velocity)
+	v := velocity.Scaled(f.ViewFinder.Scale)
+
+	fmt.Printf("viewfinder: offset: (%.1f/%.1f), scale: %f\n",
+		f.ViewFinder.Offset.X, f.ViewFinder.Offset.Y,
+		f.ViewFinder.Scale,
+	)
+	fmt.Printf("position: (%1.f/%.1f) / (%.1f/%.1f), velocity: (%.1f/%.1f) / (%.1f/%.1f)\n",
+		position.X, position.Y,
+		p.X, p.Y,
+		v.X, v.Y,
+		v.X, v.Y,
+	)
 
 	circle := chipmunk.NewCircle(vect.Vector_Zero, r)
 	//circle.SetElasticity(0.1)
