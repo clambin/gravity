@@ -7,6 +7,7 @@ import (
 	"golang.org/x/image/colornames"
 	"gravity/gui/field"
 	"gravity/gui/stats"
+	"image/color"
 	"time"
 )
 
@@ -15,9 +16,12 @@ type UI struct {
 	Y        float64
 	Field    *field.Field
 	Stats    stats.Stats
+	Callback CallbackFunc
 	time     int
 	position pixel.Vec
 }
+
+type CallbackFunc func(ui *UI)
 
 func NewUI(X, Y float64) (ui *UI) {
 	return &UI{
@@ -53,9 +57,29 @@ func (ui *UI) RunGUI() {
 		win.Update()
 		ui.ProcessEvents(win)
 
+		if ui.Callback != nil {
+			ui.Callback(ui)
+		}
+
 		win.SetTitle(fmt.Sprintf("gravity (%.1f FPS)", 1.0/time.Now().Sub(timestamp).Seconds()))
 		timestamp = time.Now()
 
 		<-ticker.C
+	}
+}
+
+type Body struct {
+	X     float64
+	Y     float64
+	R     float32
+	M     float32
+	VX    float64
+	VY    float64
+	Color color.Color
+}
+
+func (ui *UI) Load(bodies []Body) {
+	for _, body := range bodies {
+		ui.Field.Add(pixel.V(body.X, body.Y), body.R, body.M, pixel.V(body.VX, body.VY), false)
 	}
 }
