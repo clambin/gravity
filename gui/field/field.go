@@ -11,19 +11,23 @@ import (
 type Field struct {
 	ShowTrails    bool
 	ViewFinder    ViewFinder
+	MaxTrails     int
 	space         *chipmunk.Space
 	manualObjects map[*chipmunk.Body]struct{}
 	trails        map[*chipmunk.Body][]pixel.Vec
 	canvas        *pixelgl.Canvas
 }
 
+const defaultMaxTrails = 2000
+
 // New creates a gravity simulation field
 func New() *Field {
 	return &Field{
+		ViewFinder:    ViewFinder{Scale: 1},
+		MaxTrails:     defaultMaxTrails,
 		space:         chipmunk.NewSpace(),
 		manualObjects: make(map[*chipmunk.Body]struct{}),
 		trails:        make(map[*chipmunk.Body][]pixel.Vec),
-		ViewFinder:    ViewFinder{Scale: 1},
 	}
 }
 
@@ -32,7 +36,7 @@ func (f *Field) Steps(n int) {
 	for i := 0; i < n; i++ {
 		f.Step()
 	}
-	f.RecordTrails()
+	f.recordTrails()
 }
 
 // Step performs one step of the simulation
@@ -41,14 +45,13 @@ func (f *Field) Step() {
 	f.gravity()
 }
 
-// RecordTrails records the position of each body, so a trail can be drawn
-func (f *Field) RecordTrails() {
-	const maxTrails = 2000
+// recordTrails records the position of each body, so a trail can be drawn
+func (f *Field) recordTrails() {
 	for _, body := range f.space.Bodies {
 		trails, _ := f.trails[body]
 		p := body.Position()
 		trails = append(trails, pixel.V(float64(p.X), float64(p.Y)))
-		if len(trails) > maxTrails {
+		if len(trails) > f.MaxTrails {
 			trails = trails[1:]
 		}
 		f.trails[body] = trails

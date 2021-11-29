@@ -74,12 +74,12 @@ func (f Field) drawVelocity(imd *imdraw.IMDraw, body *chipmunk.Body) {
 
 func (f Field) drawAcceleration(imd *imdraw.IMDraw, body *chipmunk.Body) {
 	p := body.Position()
-	force := body.UserData.(vect.Vect)
+	acceleration := body.UserData.(vect.Vect)
 	x1 := float64(p.X)
 	y1 := float64(p.Y)
 	const magnification = 10000
-	x2 := x1 + magnification*float64(force.X/body.Mass())
-	y2 := y1 + magnification*float64(force.Y/body.Mass())
+	x2 := x1 + magnification*float64(acceleration.X)
+	y2 := y1 + magnification*float64(acceleration.Y)
 	imd.Color = pixel.RGB(1, 0, 0)
 	imd.Push(f.ViewFinder.RealToViewFinder(pixel.V(x1, y1)), f.ViewFinder.RealToViewFinder(pixel.V(x2, y2)))
 	imd.Line(1)

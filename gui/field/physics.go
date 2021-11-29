@@ -35,5 +35,7 @@ func (f *Field) applyGravity(body *chipmunk.Body) {
 		fy += dy * G * (other.Mass() * body.Mass()) / r3
 	}
 	body.AddForce(float32(fx), float32(fy))
-	body.UserData = vect.Vect{X: fx, Y: fy}
+	acceleration := vect.Vect{X: fx, Y: fy}
+	acceleration.Mult(1 / body.Mass())
+	body.UserData = acceleration
 }

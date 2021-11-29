@@ -56,6 +56,17 @@ func TestField_Add(t *testing.T) {
 		Acceleration: vect.Vect{X: 0, Y: 0},
 	}, stats[0])
 	f.ClearObjects()
+
+	f.ViewFinder.Reset()
+	f.Add(pixel.V(0, 0), 10, 1000, pixel.V(10, 10), true)
+	stats = f.Stats()
+	require.Len(t, stats, 1)
+	assert.Equal(t, field.BodyStats{
+		Position:     vect.Vect{X: 0, Y: 0},
+		Velocity:     vect.Vect{X: 10, Y: 10},
+		Acceleration: vect.Vect{X: 0, Y: 0},
+	}, stats[0])
+	f.ClearObjects()
 }
 
 func TestField_Stats(t *testing.T) {
@@ -75,4 +86,14 @@ func TestField_Stats(t *testing.T) {
 	assert.NotEqual(t, vect.Vector_Zero, stats[0].Acceleration)
 	assert.NotEqual(t, vect.Vector_Zero, stats[1].Velocity)
 	assert.NotEqual(t, vect.Vector_Zero, stats[1].Acceleration)
+}
+
+func TestField_ToggleShowTrails(t *testing.T) {
+	f := field.New()
+
+	assert.False(t, f.ShowTrails)
+	f.ToggleShowTrails()
+	assert.True(t, f.ShowTrails)
+	f.ToggleShowTrails()
+	assert.False(t, f.ShowTrails)
 }
