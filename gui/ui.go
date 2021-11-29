@@ -7,6 +7,7 @@ import (
 	"golang.org/x/image/colornames"
 	"gravity/gui/field"
 	"gravity/gui/stats"
+	"gravity/gui/status"
 	"image/color"
 	"time"
 )
@@ -15,7 +16,8 @@ type UI struct {
 	X        float64
 	Y        float64
 	Field    *field.Field
-	Stats    stats.Stats
+	Stats    stats.Reporter
+	Status   status.Reporter
 	Callback CallbackFunc
 	time     int
 	position pixel.Vec
@@ -43,6 +45,7 @@ func (ui *UI) RunGUI() {
 	}
 	ui.Field.MakeCanvas(ui.X, ui.Y)
 	ui.Stats.MakeCanvas(ui.X, ui.Y)
+	ui.Status.MakeCanvas(ui.X, ui.Y)
 
 	ticker := time.NewTicker(40 * time.Millisecond)
 	timestamp := time.Now()
@@ -52,6 +55,7 @@ func (ui *UI) RunGUI() {
 		win.Clear(colornames.Black)
 
 		ui.Field.Draw(win)
+		ui.Status.Draw(win, ui.Field.ViewFinder.Offset, ui.Field.ViewFinder.Scale, ui.time)
 		ui.Stats.Draw(win, ui.Field.Stats())
 
 		win.Update()
@@ -66,6 +70,11 @@ func (ui *UI) RunGUI() {
 
 		<-ticker.C
 	}
+}
+
+// SetTime sets the speedup factor for the simulation
+func (ui *UI) SetTime(factor int) {
+	ui.time = factor
 }
 
 type Body struct {

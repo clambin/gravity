@@ -5,7 +5,7 @@ import (
 	"github.com/vova616/chipmunk/vect"
 )
 
-const G = 0.0000001
+const G = 1e-7
 
 func (f *Field) gravity() {
 	for _, body := range f.space.Bodies {

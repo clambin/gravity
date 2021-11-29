@@ -7,33 +7,38 @@ import (
 	"github.com/faiface/pixel/text"
 	"golang.org/x/image/colornames"
 	"gravity/gui/field"
+	"gravity/gui/status"
 )
 
-type Stats struct {
+type Reporter struct {
 	canvas *pixelgl.Canvas
 	offset pixel.Vec
 }
 
 const (
-	statsX       = 300
-	statsY       = 200
-	statsYOffset = 11
+	CanvasWidth        = 400
+	CanvasWidthOffset  = 7
+	CanvasHeight       = 200
+	CanvasHeightOffset = 14
 )
 
 // MakeCanvas creates the pixelgl canvas on which to draw the stats
-func (s *Stats) MakeCanvas(x, y float64) {
-	s.canvas = pixelgl.NewCanvas(pixel.Rect{Min: pixel.Vec{X: 0, Y: -statsY + statsYOffset}, Max: pixel.Vec{X: statsX, Y: statsYOffset}})
-	s.offset = pixel.V(float64(x-statsX)/2, float64(-y+statsY)/2)
+func (reporter *Reporter) MakeCanvas(x, y float64) {
+	reporter.canvas = pixelgl.NewCanvas(pixel.Rect{
+		Min: pixel.Vec{X: -CanvasWidthOffset, Y: -CanvasHeight + CanvasHeightOffset},
+		Max: pixel.Vec{X: CanvasWidth - CanvasWidthOffset, Y: CanvasHeightOffset},
+	})
+	reporter.offset = pixel.V(float64(x-CanvasWidth)/2, float64(-y+CanvasHeight)/2+status.CanvasHeight)
 }
 
 // Draw draws the stats canvas and adds it to the Target
-func (s Stats) Draw(win pixel.Target, stats []field.BodyStats) {
-	s.canvas.Clear(colornames.Darkslategrey)
-	s.writeStats(s.canvas, stats)
-	s.canvas.Draw(win, pixel.IM.Moved(s.offset))
+func (reporter Reporter) Draw(win pixel.Target, stats []field.BodyStats) {
+	reporter.canvas.Clear(colornames.Darkslategrey)
+	reporter.writeStats(reporter.canvas, stats)
+	reporter.canvas.Draw(win, pixel.IM.Moved(reporter.offset))
 }
 
-func (s Stats) writeStats(win pixel.Target, stats []field.BodyStats) {
+func (reporter Reporter) writeStats(win pixel.Target, stats []field.BodyStats) {
 	t := text.New(pixel.V(0, 0), text.Atlas7x13)
 	for index, body := range stats {
 		p := body.Position
