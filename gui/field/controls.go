@@ -23,29 +23,25 @@ func (f *Field) ToggleShowTrails() {
 	f.ShowTrails = !f.ShowTrails
 }
 
-func (f *Field) DecelerateObjects() {
-	/*
-		for _, p := range ui.Space.Particles {
-			//if object.Manual == true {
-			p.AX /= 2
-			p.AY /= 2
-			fmt.Printf("decelerate: (%f,%f)\n", p.AX, p.AY)
-			//}
-		}
-	*/
+/*
+// DecelerateBodies reduces the velocity of each body
+func (f *Field) DecelerateBodies() {
+	f.alterVelocity(0.9)
 }
 
-func (f *Field) AccelerateObjects() {
-	/*
-		for _, p := range ui.Space.Particles {
-			// if object.Manual == true {
-			p.AX *= 2
-			p.AY *= 2
-			fmt.Printf("accelerate: (%f,%f)\n", p.AX, p.AY)
-			//}
-		}
-	*/
+// AccelerateBodies increases the velocity of each body
+func (f *Field) AccelerateBodies() {
+	f.alterVelocity(1.1)
 }
+
+func (f *Field) alterVelocity(factor vect.Float) {
+	for _, body := range f.space.Bodies {
+		v := body.Velocity()
+		v.Mult(factor)
+		body.SetVelocity(float32(v.X), float32(v.Y))
+	}
+}
+*/
 
 // Add adds a new body to the field
 func (f *Field) Add(position pixel.Vec, r, m float32, velocity pixel.Vec, manual bool) {

@@ -9,12 +9,14 @@ func (ui *UI) ProcessEvents(win *pixelgl.Window) {
 	if win.JustPressed(pixelgl.KeyC) {
 		ui.Field.ClearObjects()
 	}
-	if win.JustPressed(pixelgl.KeyD) {
-		ui.Field.DecelerateObjects()
-	}
-	if win.JustPressed(pixelgl.KeyA) {
-		ui.Field.AccelerateObjects()
-	}
+	/*
+		if win.JustPressed(pixelgl.KeyD) {
+			ui.Field.DecelerateBodies()
+		}
+		if win.JustPressed(pixelgl.KeyA) {
+			ui.Field.AccelerateBodies()
+		}
+	*/
 	if win.JustPressed(pixelgl.KeyT) {
 		ui.Field.ToggleShowTrails()
 	}
