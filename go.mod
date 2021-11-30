@@ -1,4 +1,4 @@
-module gravity
+module github.com/clambin/gravity
 
 go 1.17
 

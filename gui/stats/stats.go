@@ -2,12 +2,12 @@ package stats
 
 import (
 	"fmt"
+	"github.com/clambin/gravity/gui/field"
+	"github.com/clambin/gravity/gui/status"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/faiface/pixel/text"
 	"golang.org/x/image/colornames"
-	"gravity/gui/field"
-	"gravity/gui/status"
 )
 
 type Reporter struct {

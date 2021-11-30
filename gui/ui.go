@@ -2,12 +2,12 @@ package gui
 
 import (
 	"fmt"
+	"github.com/clambin/gravity/gui/field"
+	"github.com/clambin/gravity/gui/stats"
+	"github.com/clambin/gravity/gui/status"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
-	"gravity/gui/field"
-	"gravity/gui/stats"
-	"gravity/gui/status"
 	"image/color"
 	"time"
 )

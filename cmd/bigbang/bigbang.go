@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/clambin/gravity/gui"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	"gravity/gui"
 	"math/rand"
 )
 

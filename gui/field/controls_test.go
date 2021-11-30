@@ -1,11 +1,11 @@
 package field_test
 
 import (
+	"github.com/clambin/gravity/gui/field"
 	"github.com/faiface/pixel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/vova616/chipmunk/vect"
-	"gravity/gui/field"
 	"testing"
 )
 

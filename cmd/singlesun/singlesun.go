@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/clambin/gravity/gui"
 	"github.com/faiface/pixel/pixelgl"
-	"gravity/gui"
 )
 
 var singleSun = []gui.Body{
