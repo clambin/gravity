@@ -14,6 +14,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: 1.17
+      - uses: openrndr/setup-opengl@v1.1
       - name: test
         run: |
           go test ./... -race -coverprofile=coverage.txt.tmp -covermode=atomic
