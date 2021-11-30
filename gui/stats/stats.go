@@ -43,8 +43,9 @@ func (reporter Reporter) writeStats(win pixel.Target, stats []field.BodyStats) {
 	for index, body := range stats {
 		p := body.Position
 		v := body.Velocity.Length()
-		a := body.Acceleration
-		_, _ = fmt.Fprintf(t, "#%2d - v: %4.1f - p:(%.0f,%.0f) - a:(%.0f,%.0f)\n", index+1, v, p.X, p.Y, a.X, a.Y)
+		a := body.Acceleration.Length()
+		_, _ = fmt.Fprintf(t, "#%2d - v: %4.1f - a:%4.0f - p:(%+.0f,%+.0f)\n",
+			index+1, v, 1000*a, p.X, p.Y)
 	}
 	t.Draw(win, pixel.IM)
 }
