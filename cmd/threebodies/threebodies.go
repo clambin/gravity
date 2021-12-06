@@ -4,13 +4,13 @@ import (
 	"github.com/clambin/gravity/gui"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
+	"github.com/vova616/chipmunk/vect"
 )
 
 var threeBodies = []gui.Body{
-	{X: 0, Y: 0, M: 15e8, R: 50, VX: 0.01, VY: 0.1},
-	{X: 5000, Y: 0, M: 15e8, R: 50, VX: -0.1, VY: 0.2},
-	{X: -5000, Y: 0, M: 15e8, R: 50, VX: 0.1, VY: 0.3},
-	// {X: 7500, Y:0, M:1e3, R:10, VX:-0.1, VY:0.1},
+	{Position: vect.Vect{X: 0, Y: 0}, Mass: 20e6, Radius: 100},
+	{Position: vect.Vect{X: -2500, Y: 2500}, Mass: 2.0e6, Radius: 50, Velocity: vect.Vect{Y: -25}},
+	{Position: vect.Vect{X: 2500, Y: -2500}, Mass: 2.4e6, Radius: 55, Velocity: vect.Vect{Y: 25}},
 }
 
 // callback will keep the viewfinder focused on the first body
@@ -24,11 +24,11 @@ func callback(ui *gui.UI) {
 }
 
 func main() {
-	ui := gui.NewUI(1024, 1024)
+	ui := gui.NewUI("three bodies", 1024, 1024)
 	ui.Load(threeBodies)
 	ui.Callback = callback
-	ui.Field.ViewFinder.SetScale(30)
+	ui.Field.ViewFinder.SetScale(10)
 	ui.Field.ShowTrails = true
-	ui.SetTime(512)
+	ui.SetTime(64)
 	pixelgl.Run(ui.RunGUI)
 }

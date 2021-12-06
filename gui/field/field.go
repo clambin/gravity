@@ -1,33 +1,28 @@
 package field
 
 import (
-	"github.com/faiface/pixel"
+	"github.com/clambin/gravity/gui/object"
+	"github.com/clambin/gravity/gui/viewfinder"
+	"github.com/clambin/pixelmunk"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/vova616/chipmunk"
 	"github.com/vova616/chipmunk/vect"
 )
 
 // Field represents a gravity simulation field
 type Field struct {
-	ShowTrails    bool
-	ViewFinder    ViewFinder
-	MaxTrails     int
-	space         *chipmunk.Space
-	manualObjects map[*chipmunk.Body]struct{}
-	trails        map[*chipmunk.Body][]pixel.Vec
-	canvas        *pixelgl.Canvas
+	ShowTrails bool
+	ViewFinder *viewfinder.ViewFinder
+	objects    []*object.Object
+	world      *pixelmunk.World
+	canvas     *pixelgl.Canvas
 }
 
-const defaultMaxTrails = 2000
-
 // New creates a gravity simulation field
-func New() *Field {
+func New(name string, x, y float64) *Field {
 	return &Field{
-		ViewFinder:    ViewFinder{Scale: 1},
-		MaxTrails:     defaultMaxTrails,
-		space:         chipmunk.NewSpace(),
-		manualObjects: make(map[*chipmunk.Body]struct{}),
-		trails:        make(map[*chipmunk.Body][]pixel.Vec),
+		ViewFinder: &viewfinder.ViewFinder{Scale: 1},
+		objects:    make([]*object.Object, 0),
+		world:      pixelmunk.NewWorld(name, -x/2, -y/2, x/2, y/2),
 	}
 }
 
@@ -41,20 +36,21 @@ func (f *Field) Steps(n int) {
 
 // Step performs one step of the simulation
 func (f *Field) Step() {
-	f.space.Step(1.0)
+	f.world.Space.Step(0.001)
 	f.gravity()
 }
 
 // recordTrails records the position of each body, so a trail can be drawn
 func (f *Field) recordTrails() {
-	for _, body := range f.space.Bodies {
-		trails, _ := f.trails[body]
-		p := body.Position()
-		trails = append(trails, pixel.V(float64(p.X), float64(p.Y)))
-		if len(trails) > f.MaxTrails {
-			trails = trails[1:]
-		}
-		f.trails[body] = trails
+	for _, o := range f.objects {
+		o.RecordTrails()
+	}
+}
+
+// gravity applies the gravitational force from all other objects on each object
+func (f *Field) gravity() {
+	for _, o := range f.objects {
+		o.ApplyGravity(f.objects)
 	}
 }
 
@@ -67,10 +63,11 @@ type BodyStats struct {
 
 // Stats generates BodyStats for each body on the field
 func (f Field) Stats() (output []BodyStats) {
-	for _, body := range f.space.Bodies {
+	for _, o := range f.objects {
+		body := o.GetBody()
 		var acceleration vect.Vect
 		if body.UserData != nil {
-			acceleration = body.UserData.(vect.Vect)
+			acceleration = o.GetBody().UserData.(vect.Vect)
 		}
 		output = append(output, BodyStats{
 			Position:     body.Position(),

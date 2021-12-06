@@ -10,9 +10,9 @@ import (
 )
 
 func TestField_ClearObjects(t *testing.T) {
-	f := field.New()
-	f.Add(pixel.V(0, 0), 10, 1000, pixel.V(10, 10), false)
-	f.Add(pixel.V(10, 10), 10, 1000, pixel.V(10, 10), true)
+	f := field.New("test", 1000, 1000)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, false)
+	f.Add(vect.Vect{X: 0, Y: 10}, 10, 1000, vect.Vect{X: 10, Y: 10}, true)
 	stats := f.Stats()
 	require.Len(t, stats, 2)
 
@@ -22,9 +22,9 @@ func TestField_ClearObjects(t *testing.T) {
 }
 
 func TestField_Add(t *testing.T) {
-	f := field.New()
+	f := field.New("test", 1000, 1000)
 
-	f.Add(pixel.V(0, 0), 10, 1000, pixel.V(10, 10), true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, true)
 	stats := f.Stats()
 	require.Len(t, stats, 1)
 	assert.Equal(t, field.BodyStats{
@@ -36,7 +36,7 @@ func TestField_Add(t *testing.T) {
 
 	f.ViewFinder.SetScale(10)
 
-	f.Add(pixel.V(0, 0), 10, 1000, pixel.V(10, 10), true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 100, Y: 100}, true)
 	stats = f.Stats()
 	require.Len(t, stats, 1)
 	assert.Equal(t, field.BodyStats{
@@ -47,18 +47,18 @@ func TestField_Add(t *testing.T) {
 	f.ClearObjects()
 
 	f.ViewFinder.SetOffset(pixel.V(-100, -100))
-	f.Add(pixel.V(0, 0), 10, 1000, pixel.V(10, 10), true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, true)
 	stats = f.Stats()
 	require.Len(t, stats, 1)
 	assert.Equal(t, field.BodyStats{
-		Position:     vect.Vect{X: 1000, Y: 1000},
-		Velocity:     vect.Vect{X: 100, Y: 100},
+		Position:     vect.Vect{X: 0, Y: 0},
+		Velocity:     vect.Vect{X: 10, Y: 10},
 		Acceleration: vect.Vect{X: 0, Y: 0},
 	}, stats[0])
 	f.ClearObjects()
 
 	f.ViewFinder.Reset()
-	f.Add(pixel.V(0, 0), 10, 1000, pixel.V(10, 10), true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, true)
 	stats = f.Stats()
 	require.Len(t, stats, 1)
 	assert.Equal(t, field.BodyStats{
@@ -70,10 +70,10 @@ func TestField_Add(t *testing.T) {
 }
 
 func TestField_Stats(t *testing.T) {
-	f := field.New()
+	f := field.New("test", 1000, 1000)
 
-	f.Add(pixel.V(-10, 0), 10, 1000, pixel.V(0, 0), true)
-	f.Add(pixel.V(10, 0), 10, 10, pixel.V(0, 0), true)
+	f.Add(vect.Vect{X: -10, Y: 0}, 10, 1000, vect.Vect{X: 0, Y: 0}, true)
+	f.Add(vect.Vect{X: 10, Y: 0}, 10, 10, vect.Vect{X: 0, Y: 0}, true)
 
 	stats := f.Stats()
 	assert.Len(t, stats, 2)
@@ -89,7 +89,7 @@ func TestField_Stats(t *testing.T) {
 }
 
 func TestField_ToggleShowTrails(t *testing.T) {
-	f := field.New()
+	f := field.New("test", 1000, 1000)
 
 	assert.False(t, f.ShowTrails)
 	f.ToggleShowTrails()

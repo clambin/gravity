@@ -1,7 +1,8 @@
-package field
+package viewfinder
 
 import (
 	"github.com/faiface/pixel"
+	"github.com/vova616/chipmunk/vect"
 	"math"
 )
 
@@ -28,15 +29,17 @@ func (vf *ViewFinder) Reset() {
 }
 
 // RealToViewFinder converts a set of real coordinates to coordinates on the screen
-func (vf ViewFinder) RealToViewFinder(input pixel.Vec) (output pixel.Vec) {
-	output = input.Add(vf.Offset)
+func (vf ViewFinder) RealToViewFinder(input vect.Vect) (output pixel.Vec) {
+	output = pixel.V(float64(input.X), float64(input.Y))
+	output = output.Add(vf.Offset)
 	output = output.Scaled(1 / vf.Scale)
 	return
 }
 
 // ViewFinderToReal converts a set of coordinates on the screen to real coordinates
-func (vf ViewFinder) ViewFinderToReal(input pixel.Vec) (output pixel.Vec) {
-	output = input.Scaled(vf.Scale)
-	output = output.Sub(vf.Offset)
+func (vf ViewFinder) ViewFinderToReal(input pixel.Vec) (output vect.Vect) {
+	output = vect.Vect{X: vect.Float(input.X), Y: vect.Float(input.Y)}
+	output.Mult(vect.Float(vf.Scale))
+	output.Sub(vect.Vect{X: vect.Float(vf.Offset.X), Y: vect.Float(vf.Offset.Y)})
 	return
 }

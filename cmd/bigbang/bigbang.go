@@ -4,6 +4,7 @@ import (
 	"github.com/clambin/gravity/gui"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
+	"github.com/vova616/chipmunk/vect"
 	"math/rand"
 )
 
@@ -20,28 +21,25 @@ func callback(ui *gui.UI) {
 func bodies() (result []gui.Body) {
 	for i := 0; i < 1; i++ {
 		result = append(result, gui.Body{
-			X: float64(rand.Int31n(1000) - 500),
-			Y: float64(rand.Int31n(1000) - 500),
-			R: 100,
-			M: 1e10,
+			Position: vect.Vect{X: vect.Float(rand.Int31n(1000) - 500), Y: vect.Float(rand.Int31n(1000) - 500)},
+			Radius:   100,
+			Mass:     1e10,
 		})
 	}
 
 	for i := 0; i < 10; i++ {
 		result = append(result, gui.Body{
-			X: float64(rand.Int31n(1000) - 500),
-			Y: float64(rand.Int31n(1000) - 500),
-			R: 50,
-			M: 1e7,
+			Position: vect.Vect{X: vect.Float(rand.Int31n(1000) - 500), Y: vect.Float(rand.Int31n(1000) - 500)},
+			Radius:   50,
+			Mass:     1e7,
 		})
 	}
 
 	for i := 0; i < 100; i++ {
 		result = append(result, gui.Body{
-			X: float64(rand.Int31n(1000) - 500),
-			Y: float64(rand.Int31n(1000) - 500),
-			R: 10,
-			M: 1e3,
+			Position: vect.Vect{X: vect.Float(rand.Int31n(1000) - 500), Y: vect.Float(rand.Int31n(1000) - 500)},
+			Radius:   10,
+			Mass:     1e3,
 		})
 	}
 
@@ -49,7 +47,7 @@ func bodies() (result []gui.Body) {
 }
 
 func main() {
-	ui := gui.NewUI(1024, 1024)
+	ui := gui.NewUI("big bang", 1024, 1024)
 	ui.Load(bodies())
 	ui.Callback = callback
 	ui.Field.ViewFinder.SetScale(30)

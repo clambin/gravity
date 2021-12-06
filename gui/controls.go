@@ -9,14 +9,6 @@ func (ui *UI) ProcessEvents(win *pixelgl.Window) {
 	if win.JustPressed(pixelgl.KeyC) {
 		ui.Field.ClearObjects()
 	}
-	/*
-		if win.JustPressed(pixelgl.KeyD) {
-			ui.Field.DecelerateBodies()
-		}
-		if win.JustPressed(pixelgl.KeyA) {
-			ui.Field.AccelerateBodies()
-		}
-	*/
 	if win.JustPressed(pixelgl.KeyT) {
 		ui.Field.ToggleShowTrails()
 	}
@@ -36,8 +28,8 @@ func (ui *UI) ProcessEvents(win *pixelgl.Window) {
 		ui.Field.ViewFinder.SetOffset(newPosition.Sub(ui.position))
 		ui.position = newPosition
 	} else if win.JustReleased(pixelgl.MouseButtonLeft) && win.Pressed(pixelgl.KeyLeftControl) {
-		velocity := win.MousePosition().Sub(ui.position).Scaled(1.0 / 50)
-		ui.Field.Add(ui.position, 5, 1000, velocity, true)
+		velocity := win.MousePosition().Sub(ui.position)
+		ui.Field.Add(ui.Field.ViewFinder.ViewFinderToReal(ui.position), 5, 1, ui.Field.ViewFinder.ViewFinderToReal(velocity), true)
 	}
 	if scroll := win.MouseScroll(); scroll.Y != 0 {
 		const sensitivity = 10.0
