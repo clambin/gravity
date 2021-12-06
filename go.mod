@@ -3,6 +3,7 @@ module github.com/clambin/gravity
 go 1.17
 
 require (
+	github.com/clambin/pixelmunk v0.0.0-20211205141456-5bc86d8e70e3
 	github.com/faiface/pixel v0.10.0
 	github.com/stretchr/testify v1.7.0
 	github.com/vova616/chipmunk v0.0.0-20180914035118-c3710bbc8933
@@ -10,7 +11,6 @@ require (
 )
 
 require (
-	github.com/clambin/pixelmunk v0.0.0-20211205141456-5bc86d8e70e3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/faiface/glhf v0.0.0-20211013000516-57b20770c369 // indirect
 	github.com/faiface/mainthread v0.0.0-20171120011319-8b78f0a41ae3 // indirect
