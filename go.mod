@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/faiface/pixel v0.10.0
-	github.com/stretchr/testify v1.3.0
+	github.com/stretchr/testify v1.7.0
 	github.com/vova616/chipmunk v0.0.0-20180914035118-c3710bbc8933
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
 )
@@ -19,4 +19,5 @@ require (
 	github.com/go-gl/mathgl v1.0.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
