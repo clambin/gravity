@@ -8,9 +8,9 @@ import (
 
 var singleSun = []gui.Body{
 	{Position: vect.Vect{X: 0, Y: 0}, Mass: 3.33e7, Radius: 50, Velocity: vect.Vect{X: 0, Y: 0}},
-	{Position: vect.Vect{X: 500, Y: 0}, Mass: 1, Radius: 10, Velocity: vect.Vect{X: 0, Y: 40}},
-	{Position: vect.Vect{X: 1000, Y: 0}, Mass: 1, Radius: 10, Velocity: vect.Vect{X: 0, Y: 40}},
-	{Position: vect.Vect{X: 1500, Y: 0}, Mass: 1e2, Radius: 25, Velocity: vect.Vect{X: 0, Y: 40}},
+	{Position: vect.Vect{X: 500, Y: 0}, Mass: 1, Radius: 10, Velocity: vect.Vect{X: 500, Y: 200}},
+	{Position: vect.Vect{X: 1000, Y: 0}, Mass: 1, Radius: 10, Velocity: vect.Vect{X: 1000, Y: 150}},
+	{Position: vect.Vect{X: 1500, Y: 0}, Mass: 1e2, Radius: 25, Velocity: vect.Vect{X: 1500, Y: 150}},
 }
 
 func main() {
@@ -18,5 +18,6 @@ func main() {
 	ui.Field.ShowTrails = true
 	ui.Load(singleSun)
 	ui.Field.ViewFinder.SetScale(5)
+	ui.SetTime(256)
 	pixelgl.Run(ui.RunGUI)
 }

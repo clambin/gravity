@@ -7,10 +7,13 @@ import (
 	"github.com/vova616/chipmunk/vect"
 )
 
+const position = 1500
+const offset = 125
+
 var threeBodies = []gui.Body{
-	{Position: vect.Vect{X: 0, Y: 0}, Mass: 20e6, Radius: 100},
-	{Position: vect.Vect{X: -2500, Y: 2500}, Mass: 2.0e6, Radius: 50, Velocity: vect.Vect{Y: -25}},
-	{Position: vect.Vect{X: 2500, Y: -2500}, Mass: 2.4e6, Radius: 55, Velocity: vect.Vect{Y: 25}},
+	{Position: vect.Vect{X: 0, Y: 0}, Mass: 3e7, Radius: 100},
+	{Position: vect.Vect{X: -position, Y: position}, Mass: 2.0e6, Radius: 100, Velocity: vect.Vect{X: -position, Y: position + offset}},
+	{Position: vect.Vect{X: position, Y: -position}, Mass: 2.4e6, Radius: 155, Velocity: vect.Vect{X: position, Y: -position + offset}},
 }
 
 // callback will keep the viewfinder focused on the first body
