@@ -28,8 +28,7 @@ func (ui *UI) ProcessEvents(win *pixelgl.Window) {
 		ui.Field.ViewFinder.SetOffset(newPosition.Sub(ui.position))
 		ui.position = newPosition
 	} else if win.JustReleased(pixelgl.MouseButtonLeft) && win.Pressed(pixelgl.KeyLeftControl) {
-		velocity := win.MousePosition().Sub(ui.position)
-		ui.Field.Add(ui.Field.ViewFinder.ViewFinderToReal(ui.position), 5, 1, ui.Field.ViewFinder.ViewFinderToReal(velocity), true)
+		ui.AddManual(ui.position, win.MousePosition(), 5, 1)
 	}
 	if scroll := win.MouseScroll(); scroll.Y != 0 {
 		const sensitivity = 10.0

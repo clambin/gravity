@@ -88,15 +88,13 @@ type Body struct {
 
 func (ui *UI) Load(bodies []Body) {
 	for _, body := range bodies {
-		ui.Field.Add(body.Position, body.Radius, body.Mass, body.Velocity, false)
+		ui.Field.Add(body.Position, body.Radius, body.Mass, body.Velocity, body.Color, false)
 	}
 }
 
-func (ui *UI) AddManual(position pixel.Vec, radius float32, mass float32, velocity pixel.Vec) {
-	ui.Field.Add(
-		ui.Field.ViewFinder.ViewFinderToReal(position),
-		radius,
-		vect.Float(mass),
-		ui.Field.ViewFinder.ViewFinderToReal(velocity),
-		true)
+func (ui *UI) AddManual(position1 pixel.Vec, position2 pixel.Vec, radius float32, mass float32) {
+	position := ui.Field.ViewFinder.ViewFinderToReal(position1)
+	velocity := ui.Field.ViewFinder.ViewFinderToReal(position2)
+	velocity.Sub(position)
+	ui.Field.Add(position, radius, vect.Float(mass), velocity, colornames.White, true)
 }

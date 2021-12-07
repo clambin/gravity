@@ -4,14 +4,15 @@ import (
 	"github.com/clambin/gravity/gui/object"
 	"github.com/stretchr/testify/assert"
 	"github.com/vova616/chipmunk/vect"
+	"golang.org/x/image/colornames"
 	"math"
 	"testing"
 )
 
 func TestObject_ApplyGravity(t *testing.T) {
 	objects := []*object.Object{
-		object.New(vect.Vector_Zero, 100, 5e4, vect.Vector_Zero, nil, true),
-		object.New(vect.Vect{X: 100, Y: 100}, 100, 1e5, vect.Vect{X: 100, Y: 100}, nil, true),
+		object.New(vect.Vector_Zero, 100, 5e4, vect.Vector_Zero, nil, colornames.White, true),
+		object.New(vect.Vect{X: 100, Y: 100}, 100, 1e5, vect.Vector_Zero, nil, colornames.White, true),
 	}
 
 	for _, o := range objects {

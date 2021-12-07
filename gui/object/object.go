@@ -7,6 +7,7 @@ import (
 	"github.com/faiface/pixel/imdraw"
 	"github.com/vova616/chipmunk/vect"
 	"golang.org/x/image/colornames"
+	"image/color"
 )
 
 type Object struct {
@@ -24,20 +25,18 @@ const (
 
 var (
 	trailColor        = pixel.RGB(0, 0, 0.5)
-	objectColor       = colornames.Yellow
-	manualObjectColor = colornames.White
 	velocityColor     = pixel.RGB(0, 0.8, 0)
 	accelerationColor = colornames.Red
 )
 
-func New(position vect.Vect, radius float32, mass vect.Float, velocity vect.Vect, viewFinder *viewfinder.ViewFinder, manual bool) (object *Object) {
+func New(position vect.Vect, radius float32, mass vect.Float, velocity vect.Vect, viewFinder *viewfinder.ViewFinder, c color.Color, manual bool) (object *Object) {
 	object = &Object{
 		Manual:     manual,
 		trails:     make([]vect.Vect, 0, maxTrails+1),
 		viewFinder: viewFinder,
 	}
-	velocity.Sub(position)
 	object.Object = pixelmunk.NewCircle(pixelmunk.ObjectOptions{
+		Color: c,
 		BodyOptions: pixelmunk.ObjectBodyOptions{
 			Position:   position,
 			Velocity:   velocity,
@@ -84,11 +83,7 @@ func (o Object) DrawObject(imd *imdraw.IMDraw) {
 	p := body.Position()
 	r := float64(body.Shapes[0].GetAsCircle().Radius) / o.viewFinder.Scale
 
-	if o.Manual {
-		imd.Color = manualObjectColor
-	} else {
-		imd.Color = objectColor
-	}
+	imd.Color = o.Object.GetOptions().Color
 	imd.Push(o.viewFinder.RealToViewFinder(p))
 	imd.Circle(r, 0)
 }

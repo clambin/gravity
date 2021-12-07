@@ -1,18 +1,20 @@
 package field_test
 
 import (
+	"github.com/clambin/gravity/gui"
 	"github.com/clambin/gravity/gui/field"
 	"github.com/faiface/pixel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/vova616/chipmunk/vect"
+	"golang.org/x/image/colornames"
 	"testing"
 )
 
 func TestField_ClearObjects(t *testing.T) {
 	f := field.New("test", 1000, 1000)
-	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, false)
-	f.Add(vect.Vect{X: 0, Y: 10}, 10, 1000, vect.Vect{X: 10, Y: 10}, true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, colornames.White, false)
+	f.Add(vect.Vect{X: 0, Y: 10}, 10, 1000, vect.Vect{X: 10, Y: 10}, colornames.White, true)
 	stats := f.Stats()
 	require.Len(t, stats, 2)
 
@@ -24,7 +26,7 @@ func TestField_ClearObjects(t *testing.T) {
 func TestField_Add(t *testing.T) {
 	f := field.New("test", 1000, 1000)
 
-	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, colornames.White, true)
 	stats := f.Stats()
 	require.Len(t, stats, 1)
 	assert.Equal(t, field.BodyStats{
@@ -36,7 +38,7 @@ func TestField_Add(t *testing.T) {
 
 	f.ViewFinder.SetScale(10)
 
-	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 100, Y: 100}, true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 100, Y: 100}, colornames.White, true)
 	stats = f.Stats()
 	require.Len(t, stats, 1)
 	assert.Equal(t, field.BodyStats{
@@ -47,7 +49,7 @@ func TestField_Add(t *testing.T) {
 	f.ClearObjects()
 
 	f.ViewFinder.SetOffset(pixel.V(-100, -100))
-	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, colornames.White, true)
 	stats = f.Stats()
 	require.Len(t, stats, 1)
 	assert.Equal(t, field.BodyStats{
@@ -58,7 +60,7 @@ func TestField_Add(t *testing.T) {
 	f.ClearObjects()
 
 	f.ViewFinder.Reset()
-	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, true)
+	f.Add(vect.Vect{X: 0, Y: 0}, 10, 1000, vect.Vect{X: 10, Y: 10}, colornames.White, true)
 	stats = f.Stats()
 	require.Len(t, stats, 1)
 	assert.Equal(t, field.BodyStats{
@@ -72,13 +74,17 @@ func TestField_Add(t *testing.T) {
 func TestField_Stats(t *testing.T) {
 	f := field.New("test", 1000, 1000)
 
-	f.Add(vect.Vect{X: -10, Y: 0}, 10, 1000, vect.Vect{X: 0, Y: 0}, true)
-	f.Add(vect.Vect{X: 10, Y: 0}, 10, 10, vect.Vect{X: 0, Y: 0}, true)
+	for _, body := range []gui.Body{
+		{Position: vect.Vect{X: 0, Y: 0}, Mass: 3.33e7, Radius: 50, Velocity: vect.Vect{X: 0, Y: 0}, Color: colornames.Yellow},
+		{Position: vect.Vect{X: 200, Y: 0}, Mass: 1e2, Radius: 10, Velocity: vect.Vect{X: 0, Y: 440}, Color: colornames.Grey},
+	} {
+		f.Add(body.Position, body.Radius, body.Mass, body.Velocity, body.Color, false)
+	}
 
 	stats := f.Stats()
 	assert.Len(t, stats, 2)
 
-	f.Steps(10)
+	f.Steps(100)
 
 	stats = f.Stats()
 	require.Len(t, stats, 2)

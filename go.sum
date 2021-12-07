@@ -1,5 +1,7 @@
-github.com/clambin/pixelmunk v0.0.0-20211205141456-5bc86d8e70e3 h1:d+ymWnxSBUsX4OagyaamYKo9kwHMYH3UsHApoGJYdB8=
-github.com/clambin/pixelmunk v0.0.0-20211205141456-5bc86d8e70e3/go.mod h1:K25vNANgl2kA3ooTrz4IsYLIqqKSi37tLzIhDx2lgoA=
+github.com/clambin/pixelmunk v0.0.0-20211205163604-ff230e7cee90 h1:5c5uEF1rb+NSehsDzVUmtIp719MBAhgFxdd0MdH9WFI=
+github.com/clambin/pixelmunk v0.0.0-20211205163604-ff230e7cee90/go.mod h1:K25vNANgl2kA3ooTrz4IsYLIqqKSi37tLzIhDx2lgoA=
+github.com/clambin/pixelmunk v0.0.0-20211207161518-9c5f31b93c94 h1:MNh8O3s40oYZdoN8rV8A+wcEOdJpaF+DqgVE30s6JyE=
+github.com/clambin/pixelmunk v0.0.0-20211207161518-9c5f31b93c94/go.mod h1:K25vNANgl2kA3ooTrz4IsYLIqqKSi37tLzIhDx2lgoA=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

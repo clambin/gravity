@@ -5,15 +5,16 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/vova616/chipmunk/vect"
+	"golang.org/x/image/colornames"
 )
 
 const position = 1500
 const offset = 125
 
 var threeBodies = []gui.Body{
-	{Position: vect.Vect{X: 0, Y: 0}, Mass: 3e7, Radius: 100},
-	{Position: vect.Vect{X: -position, Y: position}, Mass: 2.0e6, Radius: 100, Velocity: vect.Vect{X: -position, Y: position + offset}},
-	{Position: vect.Vect{X: position, Y: -position}, Mass: 2.4e6, Radius: 155, Velocity: vect.Vect{X: position, Y: -position + offset}},
+	{Position: vect.Vect{X: 0, Y: 0}, Mass: 3e7, Radius: 150, Color: colornames.Yellow},
+	{Position: vect.Vect{X: -position, Y: position}, Mass: 2.0e6, Radius: 100, Velocity: vect.Vect{X: 0, Y: offset}, Color: colornames.Red},
+	{Position: vect.Vect{X: position, Y: -position}, Mass: 2.4e6, Radius: 105, Velocity: vect.Vect{X: 0, Y: -offset}, Color: colornames.Green},
 }
 
 // callback will keep the viewfinder focused on the first body
