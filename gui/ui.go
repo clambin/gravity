@@ -66,7 +66,7 @@ func (ui *UI) RunGUI() {
 		win.Update()
 		ui.ProcessEvents(win)
 
-		win.SetTitle(fmt.Sprintf("%s (%.1f FPS)", ui.name, 1.0/time.Now().Sub(timestamp).Seconds()))
+		win.SetTitle(fmt.Sprintf("%s (%.1f FPS)", ui.name, 1.0/time.Since(timestamp).Seconds()))
 		timestamp = time.Now()
 
 		<-ticker.C
