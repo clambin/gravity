@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/clambin/pixelmunk v0.1.0
 	github.com/faiface/pixel v0.10.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	github.com/vova616/chipmunk v0.0.0-20180914035118-c3710bbc8933
 	golang.org/x/image v0.7.0
 )
