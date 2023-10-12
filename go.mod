@@ -7,7 +7,7 @@ require (
 	github.com/faiface/pixel v0.10.0
 	github.com/stretchr/testify v1.8.4
 	github.com/vova616/chipmunk v0.0.0-20180914035118-c3710bbc8933
-	golang.org/x/image v0.12.0
+	golang.org/x/image v0.13.0
 )
 
 require (
