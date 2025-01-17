@@ -9,10 +9,11 @@ import (
 
 var singleSun = []gui.Body{
 	{Position: vect.Vect{X: 0, Y: 0}, Mass: 3.33e7, Radius: 50, Velocity: vect.Vect{X: 0, Y: 0}, Color: colornames.Yellow},
-	{Position: vect.Vect{X: 200, Y: 0}, Mass: 1e2, Radius: 10, Velocity: vect.Vect{X: 0, Y: 440}, Color: colornames.Grey},
-	{Position: vect.Vect{X: 600, Y: 0}, Mass: 1e3, Radius: 10, Velocity: vect.Vect{X: 0, Y: 250}, Color: colornames.Orange},
-	{Position: vect.Vect{X: 1000, Y: 0}, Mass: 1e3, Radius: 10, Velocity: vect.Vect{X: 0, Y: 180}, Color: colornames.Lightblue},
+	{Position: vect.Vect{X: 200, Y: 0}, Mass: 1e3, Radius: 20, Velocity: vect.Vect{X: 0, Y: 350}, Color: colornames.Grey},
+	{Position: vect.Vect{X: 600, Y: 0}, Mass: 1e3, Radius: 20, Velocity: vect.Vect{X: 0, Y: 250}, Color: colornames.Orange},
+	{Position: vect.Vect{X: 1000, Y: 0}, Mass: 1e3, Radius: 20, Velocity: vect.Vect{X: 0, Y: 180}, Color: colornames.Lightblue},
 	{Position: vect.Vect{X: 1500, Y: 0}, Mass: 1e4, Radius: 25, Velocity: vect.Vect{X: 0, Y: 150}, Color: colornames.Purple},
+	{Position: vect.Vect{X: 5000, Y: 0}, Mass: 1e5, Radius: 30, Velocity: vect.Vect{X: 0, Y: 65}, Color: colornames.Aliceblue},
 }
 
 func main() {
