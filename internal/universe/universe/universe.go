@@ -14,6 +14,7 @@ import (
 )
 
 type Game struct {
+	FocusObject  *cp.Shape
 	space        *cp.Space
 	zoom         float64
 	speed        int
@@ -93,6 +94,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		width, height := r.Dx(), r.Dy()
 
 		op.GeoM.Reset()
+		if g.FocusObject != nil {
+			centre := g.FocusObject.Body().Position()
+			op.GeoM.Translate(-centre.X, -centre.Y)
+		}
 		op.GeoM.Translate(-float64(width/2), -float64(height/2))
 		op.GeoM.Translate(body.Position().X, body.Position().Y)
 		op.GeoM.Scale(1/g.zoom, 1/g.zoom)

@@ -33,7 +33,7 @@ func threeBodies(_, _ float64) []*cp.Shape {
 	return []*cp.Shape{
 		universe.NewObject(1e7, 7*radius, cp.Vector{X: -400, Y: 1000}, cp.Vector{}, colornames.Yellow),
 		universe.NewObject(1e7, 7*radius, cp.Vector{X: -1200, Y: 1000}, initialVelocity.Mult(-1), colornames.Red),
-		universe.NewObject(1e7, 7*radius, cp.Vector{X: 800, Y: 1000}, initialVelocity.Mult(0.75), colornames.Blue),
+		universe.NewObject(1e7, 7*radius, cp.Vector{X: 800, Y: 1000}, initialVelocity.Mult(1), colornames.Blue),
 	}
 }
 
@@ -41,7 +41,9 @@ func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Ebiten")
 
-	g := universe.New(screenWidth, screenHeight, threeBodies(screenHeight*5, screenHeight*5))
+	objects := threeBodies(screenHeight*5, screenHeight*5)
+	g := universe.New(screenWidth, screenHeight, objects)
+	g.FocusObject = objects[0]
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
