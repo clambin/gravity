@@ -186,8 +186,8 @@ func newObject(image *ebiten.Image) *object {
 	}
 }
 
-func (o *object) addTrail(trail cp.Vector) {
-	o.trails = append(o.trails, trail)
+func (o *object) addTrail(position cp.Vector) {
+	o.trails = append(o.trails, position)
 	if len(o.trails) >= trails {
 		o.trails = o.trails[1:]
 	}
