@@ -2,9 +2,10 @@ package gravity
 
 import "github.com/jakecoffman/cp/v2"
 
-// G is the gravitational constant.  To make the demo more user-friendly, we apply a fake constant.
+// G is the gravitational constant
 // const G = 6.67408e-11
-const G = 0.1
+// We use a fake constant so masses, distances & velocities can be smaller.
+const G = 0.0674
 
 func TotalGravitationalForce(space *cp.Space, body *cp.Body) cp.Vector {
 	var force cp.Vector

@@ -104,19 +104,20 @@ func init() {
 
 func (u *Universe) Draw(screen *ebiten.Image) {
 	var op ebiten.DrawImageOptions
-	screenOffset := cp.Vector{X: float64(u.screenWidth / 2), Y: float64(u.screenHeight / 2)}
 	u.space.EachBody(func(body *cp.Body) {
-		var offset cp.Vector
-		if u.FocusObject != nil {
-			offset = u.FocusObject.Body().Position().Mult(-1)
-		}
 		o := body.UserData.(*object)
-		drawImage(screen, o.image, &op, body.Position(), offset, 1/u.zoom, screenOffset)
+		// find top left corner of the image
+		r := o.image.Bounds()
+		u.drawImage(screen, o.image, &op, body.Position().Sub(cp.Vector{X: float64(r.Dx() / 2), Y: float64(r.Dy() / 2)}))
 
 		// draw the trails
 		for _, trail := range o.trails {
-			drawImage(screen, dot, &op, trail, offset, 1/u.zoom, screenOffset)
+			u.drawImage(screen, dot, &op, trail)
 		}
+
+		//if trailsImage, topLeft := o.drawTrails(colornames.Blue); trailsImage != nil {
+		//	u.drawImage(screen, trailsImage, &op, topLeft, bodyOffset, 1/u.zoom, screenOffset)
+		//}
 	})
 
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f v: %s speed: %d, zoom: %.0f",
@@ -131,19 +132,22 @@ func (u *Universe) Draw(screen *ebiten.Image) {
 //
 // pos indicates the centre of the src image (in "universe" coordinates)
 // offset is added to the translation from universe to screen coordinates. This allows the screen to stay centred on one object
-// scale is the ratio between universe & screen coordinates. This allows to "zoom" in and out of the universe
-// screenOffset should be half of screen width & height, putting the (0,0) universe coordinates in the middle of the screen
-func drawImage(dst, src *ebiten.Image, op *ebiten.DrawImageOptions, pos, offset cp.Vector, scale float64, screenOffset cp.Vector) {
-	// find top left corner of the image
-	r := src.Bounds()
-	offset = offset.Sub(cp.Vector{X: float64(r.Dx() / 2), Y: float64(r.Dy() / 2)})
-
-	op.GeoM.Reset()
-	op.GeoM.Translate(pos.X, pos.Y)                   // centre of the object
-	op.GeoM.Translate(offset.X, offset.Y)             // offset to the top left corner of the image, possibly adapted to keep focus on one object
-	op.GeoM.Scale(scale, scale)                       // scale the image for the current zoom factor
-	op.GeoM.Translate(screenOffset.X, screenOffset.Y) // screenOffset puts (0,0) at the centre of the screen
+func (u *Universe) drawImage(dst, src *ebiten.Image, op *ebiten.DrawImageOptions, pos cp.Vector) {
+	op.GeoM = u.getGeometry(pos)
 	dst.DrawImage(src, op)
+}
+
+func (u *Universe) getGeometry(pos cp.Vector) ebiten.GeoM {
+	var centreObject cp.Vector
+	if u.FocusObject != nil {
+		centreObject = u.FocusObject.Body().Position().Mult(-1)
+	}
+	var geom ebiten.GeoM
+	geom.Translate(pos.X, pos.Y)                                        // centre of the object
+	geom.Translate(centreObject.X, centreObject.Y)                      // offset to keep focus on one object
+	geom.Scale(1/u.zoom, 1/u.zoom)                                      // scale the image for the current zoom factor
+	geom.Translate(float64(u.screenWidth/2), float64(u.screenHeight/2)) // screenOffset puts (0,0) at the centre of the screen
+	return geom
 }
 
 func (u *Universe) velocities() []string {
@@ -172,7 +176,7 @@ func NewBody(mass float64, radius float64, position cp.Vector, velocity cp.Vecto
 	return shape
 }
 
-const trails = 500
+const trails = 200
 
 type object struct {
 	image  *ebiten.Image
@@ -192,3 +196,35 @@ func (o *object) addTrail(position cp.Vector) {
 		o.trails = o.trails[1:]
 	}
 }
+
+/*
+func (o *object) drawTrails(clr color.Color) (*ebiten.Image, cp.Vector) {
+	if len(o.trails) < 2 {
+		return nil, cp.Vector{}
+	}
+	width, height, minX, minY := bounds(o.trails)
+	// todo: img can get very big. use a reasonable fixed size and prorate the coordinates accordingly.
+	img := ebiten.NewImage(max(1, int(width)), max(1, int(height)))
+	from := o.trails[0]
+	for _, trail := range o.trails[1:] {
+		if trail.Sub(from).Length() < 20 {
+			continue
+		}
+		vector.StrokeLine(img, float32(from.X-minX), float32(from.Y-minY), float32(trail.X-minX), float32(trail.Y-minY), 3, clr, false)
+		from = trail
+	}
+	return img, cp.Vector{X: minX, Y: minY}
+}
+
+func bounds(positions []cp.Vector) (width, height, minX, minY float64) {
+	minPos := cp.Vector{X: math.Inf(+1), Y: math.Inf(+1)}
+	maxPos := cp.Vector{X: math.Inf(-1), Y: math.Inf(-1)}
+	for _, pos := range positions {
+		minPos.X = min(pos.X, minPos.X)
+		minPos.Y = min(pos.Y, minPos.Y)
+		maxPos.X = max(pos.X, maxPos.X)
+		maxPos.Y = max(pos.Y, maxPos.Y)
+	}
+	return maxPos.X - minPos.X, maxPos.Y - minPos.Y, minPos.X, minPos.Y
+}
+*/
