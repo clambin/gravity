@@ -166,7 +166,7 @@ func NewBody(mass float64, radius float64, position cp.Vector, velocity cp.Vecto
 	body.SetVelocity(velocity.X, velocity.Y)
 
 	shape := cp.NewCircle(body, radius, cp.Vector{})
-	shape.SetElasticity(0.1)
+	shape.SetElasticity(1.0)
 	shape.SetFriction(1)
 
 	img := ebiten.NewImage(int(2*radius), int(2*radius))
@@ -176,7 +176,7 @@ func NewBody(mass float64, radius float64, position cp.Vector, velocity cp.Vecto
 	return shape
 }
 
-const trails = 200
+const trails = 1000
 
 type object struct {
 	image  *ebiten.Image
@@ -196,35 +196,3 @@ func (o *object) addTrail(position cp.Vector) {
 		o.trails = o.trails[1:]
 	}
 }
-
-/*
-func (o *object) drawTrails(clr color.Color) (*ebiten.Image, cp.Vector) {
-	if len(o.trails) < 2 {
-		return nil, cp.Vector{}
-	}
-	width, height, minX, minY := bounds(o.trails)
-	// todo: img can get very big. use a reasonable fixed size and prorate the coordinates accordingly.
-	img := ebiten.NewImage(max(1, int(width)), max(1, int(height)))
-	from := o.trails[0]
-	for _, trail := range o.trails[1:] {
-		if trail.Sub(from).Length() < 20 {
-			continue
-		}
-		vector.StrokeLine(img, float32(from.X-minX), float32(from.Y-minY), float32(trail.X-minX), float32(trail.Y-minY), 3, clr, false)
-		from = trail
-	}
-	return img, cp.Vector{X: minX, Y: minY}
-}
-
-func bounds(positions []cp.Vector) (width, height, minX, minY float64) {
-	minPos := cp.Vector{X: math.Inf(+1), Y: math.Inf(+1)}
-	maxPos := cp.Vector{X: math.Inf(-1), Y: math.Inf(-1)}
-	for _, pos := range positions {
-		minPos.X = min(pos.X, minPos.X)
-		minPos.Y = min(pos.Y, minPos.Y)
-		maxPos.X = max(pos.X, maxPos.X)
-		maxPos.Y = max(pos.Y, maxPos.Y)
-	}
-	return maxPos.X - minPos.X, maxPos.Y - minPos.Y, minPos.X, minPos.Y
-}
-*/
