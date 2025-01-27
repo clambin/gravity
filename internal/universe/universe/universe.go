@@ -14,8 +14,9 @@ import (
 )
 
 type Universe struct {
-	FocusObject  *cp.Shape
-	space        *cp.Space
+	FocusObject *cp.Shape
+	space       *cp.Space
+	gravity.Gravity
 	zoom         float64
 	speed        int
 	screenWidth  int
@@ -61,7 +62,7 @@ func (u *Universe) Update() error {
 
 func (u *Universe) applyGravity() {
 	u.space.EachBody(func(body *cp.Body) {
-		f := gravity.TotalGravitationalForce(u.space, body)
+		f := u.TotalGravitationalForce(u.space, body)
 		body.SetForce(f)
 	})
 }

@@ -1,20 +1,25 @@
 package gravity
 
-import "github.com/jakecoffman/cp/v2"
+import (
+	"cmp"
+	"github.com/jakecoffman/cp/v2"
+)
 
 // G is the gravitational constant
-// const G = 6.67408e-11
-// We use a fake constant so masses, distances & velocities can be smaller.
-const G = 0.0674
+const G = 6.67408e-11
 
-func TotalGravitationalForce(space *cp.Space, body *cp.Body) cp.Vector {
+type Gravity struct {
+	G float64
+}
+
+func (g Gravity) TotalGravitationalForce(space *cp.Space, body *cp.Body) cp.Vector {
 	var force cp.Vector
 	space.EachBody(func(other *cp.Body) {
 		// skip body itself.  also avoids div by zero in gravitationalForce
 		if other.Position() == body.Position() {
 			return
 		}
-		force = force.Add(gravitationalForce(body, other, G))
+		force = force.Add(gravitationalForce(body, other, cmp.Or(g.G, G)))
 	})
 	return force
 }

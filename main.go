@@ -30,6 +30,8 @@ func main() {
 
 	objects := threeBodies
 	g := universe.New(screenWidth, screenHeight, objects)
+	// use a fake gravitational constant so masses, distances & velocities are easier
+	g.Gravity.G = 0.0674
 	g.FocusObject = objects[0]
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
