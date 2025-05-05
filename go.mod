@@ -1,13 +1,12 @@
 module github.com/clambin/gravity
 
 go 1.23
-
-toolchain go1.23.5
+toolchain go1.24.1
 
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.8.6
 	github.com/jakecoffman/cp/v2 v2.1.0
-	golang.org/x/image v0.24.0
+	golang.org/x/image v0.27.0
 )
 
 require (
