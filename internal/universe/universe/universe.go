@@ -2,6 +2,9 @@ package universe
 
 import (
 	"fmt"
+	"image/color"
+	"strings"
+
 	"github.com/clambin/gravity/gravity"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -9,8 +12,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/jakecoffman/cp/v2"
 	"golang.org/x/image/colornames"
-	"image/color"
-	"strings"
 )
 
 type Universe struct {
@@ -100,7 +101,7 @@ var (
 
 func init() {
 	dot = ebiten.NewImage(5, 5)
-	vector.DrawFilledCircle(dot, 0, 0, 5, colornames.Blue, false)
+	vector.FillCircle(dot, 0, 0, 5, colornames.Blue, false)
 }
 
 func (u *Universe) Draw(screen *ebiten.Image) {
