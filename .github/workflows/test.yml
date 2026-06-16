@@ -23,7 +23,7 @@ jobs:
           sudo apt-get install libgl1-mesa-dev xorg-dev
       - name: test
         run: |
-          go test ./... -race -coverprofile=coverage.txt.tmp -covermode=atomic
+          go test ./... -race -coverprofile=coverage.txt -covermode=atomic
       - uses: codecov/codecov-action@v7
         with:
           files: coverage.txt
